@@ -87,7 +87,7 @@ class StreamPlaybackManager: NSObject {
         
         switch keyPath {
         case #keyPath(AVURLAsset.isPlayable):
-            guard let asset = asset, asset.urlAsset.isPlayable == true else { return }
+            guard let asset = asset/*, asset.urlAsset.isPlayable == true*/ else { return }
             
             playerItem = AVPlayerItem(asset: asset.urlAsset)
             player.replaceCurrentItem(with: playerItem)

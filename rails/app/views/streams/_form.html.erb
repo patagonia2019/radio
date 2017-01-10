@@ -17,13 +17,14 @@
   </div>
 
   <div class="field">
-    <%= f.label :type %>
-    <%= f.text_field :type %>
+    <%= f.label :url_type %>
+    <%= f.select :url_type, ['Stream', 'Web', 'Facebook', 'Twitter', 'Pinterest'] %>
+
   </div>
 
   <div class="field">
     <%= f.label :station_id %>
-    <%= f.number_field :station_id %>
+    <%= f.select :station_id, Station.all.collect { |p| [ p.name, p.id ] }, include_blank: true %>
   </div>
 
   <div class="actions">

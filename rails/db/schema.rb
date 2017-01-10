@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170108165618) do
+ActiveRecord::Schema.define(version: 20170110220359) do
 
   create_table "cities", force: :cascade do |t|
     t.string   "name"
@@ -52,10 +52,10 @@ ActiveRecord::Schema.define(version: 20170108165618) do
 
   create_table "streams", force: :cascade do |t|
     t.string   "name"
-    t.string   "type"
     t.integer  "station_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "url_type"
   end
 
   create_table "users", force: :cascade do |t|

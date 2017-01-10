@@ -1,0 +1,7 @@
+  <tr>
+    <td><%= stream.name %></td>
+    <td><%= stream.url_type %></td>
+    <td><%= Station.find(stream.station_id).name if stream.station_id? %></td>
+    <td><%= link_to 'Edit', edit_stream_path(stream), class: "btn btn-success" %></td>
+    <td><%= link_to 'Destroy', stream, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>

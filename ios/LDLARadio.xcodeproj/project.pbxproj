@@ -19,6 +19,7 @@
 		42AA6D151D04CE63002A8B3F /* StreamListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA6D141D04CE63002A8B3F /* StreamListManager.swift */; };
 		42AFF1461CE52D3E006B1BB3 /* Streams.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42AFF1451CE52D3E006B1BB3 /* Streams.plist */; };
 		7073F3B71E155C05004DBB59 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7073F3B61E155C05004DBB59 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		DA30B3785768509648E1BFF1 /* Pods_LDLARadio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB8E2A20860A4CCF53C0AD68 /* Pods_LDLARadio.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +37,10 @@
 		42813A051CE44F9700972264 /* StreamPersistenceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StreamPersistenceManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42AA6D141D04CE63002A8B3F /* StreamListManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StreamListManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42AFF1451CE52D3E006B1BB3 /* Streams.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Streams.plist; sourceTree = "<group>"; };
+		47F749A1AD4E4959FB881877 /* Pods-LDLARadio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LDLARadio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LDLARadio/Pods-LDLARadio.debug.xcconfig"; sourceTree = "<group>"; };
 		7073F3B61E155C05004DBB59 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		7EAAF7AFF51F030A534694AA /* Pods-LDLARadio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LDLARadio.release.xcconfig"; path = "Pods/Target Support Files/Pods-LDLARadio/Pods-LDLARadio.release.xcconfig"; sourceTree = "<group>"; };
+		EB8E2A20860A4CCF53C0AD68 /* Pods_LDLARadio.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LDLARadio.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +49,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7073F3B71E155C05004DBB59 /* AVFoundation.framework in Frameworks */,
+				DA30B3785768509648E1BFF1 /* Pods_LDLARadio.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +71,7 @@
 				428139F01CE44B7300972264 /* LDLARadio */,
 				428139EF1CE44B7300972264 /* Products */,
 				7073F3B51E155C05004DBB59 /* Frameworks */,
+				F055EE4825577AFE56B94110 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,8 +114,18 @@
 			isa = PBXGroup;
 			children = (
 				7073F3B61E155C05004DBB59 /* AVFoundation.framework */,
+				EB8E2A20860A4CCF53C0AD68 /* Pods_LDLARadio.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F055EE4825577AFE56B94110 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				47F749A1AD4E4959FB881877 /* Pods-LDLARadio.debug.xcconfig */,
+				7EAAF7AFF51F030A534694AA /* Pods-LDLARadio.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,9 +135,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 42813A001CE44B7300972264 /* Build configuration list for PBXNativeTarget "LDLARadio" */;
 			buildPhases = (
+				7E4195A1384A60A4C5463141 /* [CP] Check Pods Manifest.lock */,
 				428139EA1CE44B7300972264 /* Sources */,
 				428139EB1CE44B7300972264 /* Frameworks */,
 				428139EC1CE44B7300972264 /* Resources */,
+				6CE87B9F3FBDAB5D9DC48DC1 /* [CP] Embed Pods Frameworks */,
+				78F0B74CA73048EC6C6F41C6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -139,7 +158,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Apple Inc.";
 				TargetAttributes = {
 					428139ED1CE44B7300972264 = {
@@ -187,6 +206,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6CE87B9F3FBDAB5D9DC48DC1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LDLARadio/Pods-LDLARadio-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		78F0B74CA73048EC6C6F41C6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LDLARadio/Pods-LDLARadio-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7E4195A1384A60A4C5463141 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		428139EA1CE44B7300972264 /* Sources */ = {
@@ -239,8 +306,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -285,8 +354,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -312,7 +383,9 @@
 		};
 		42813A011CE44B7300972264 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47F749A1AD4E4959FB881877 /* Pods-LDLARadio.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -331,7 +404,9 @@
 		};
 		42813A021CE44B7300972264 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7EAAF7AFF51F030A534694AA /* Pods-LDLARadio.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
