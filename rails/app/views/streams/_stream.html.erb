@@ -1,7 +1,15 @@
   <tr>
     <td><%= stream.name %></td>
     <td><%= stream.url_type %></td>
-    <td><%= Station.find(stream.station_id).name if stream.station_id? %></td>
+    <td><%= Station.find(stream.station_id).name if stream.station_id? %> </td>
+    <td> <%= streamUrlExist(stream.name) if stream.listen_is_working? %> </td>
+    <td> <%=stream.head_is_working%> </td>
+    <td> <%=stream.listen_is_working%> </td>
+    <td>
+        <% if stream.listen_is_working and streamUrlIsAudio?(stream.url_type) %> 
+        <%= audio_tag(stream.name, controls: true)  %> 
+        <% end %> 
+    </td>
     <td><%= link_to 'Edit', edit_stream_path(stream), class: "btn btn-success" %></td>
     <td><%= link_to 'Destroy', stream, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>

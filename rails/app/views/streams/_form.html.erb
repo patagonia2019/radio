@@ -17,6 +17,12 @@
   </div>
 
   <div class="field">
+        <% if streamUrlIsAudio?(stream.url_type) %> 
+        <%= audio_tag(stream.name, controls: true)  %> 
+        <% end %> 
+  </div>
+
+  <div class="field">
     <%= f.label :url_type %>
     <%= f.select :url_type, ['Stream', 'Web', 'Facebook', 'Twitter', 'Pinterest'] %>
 
@@ -26,6 +32,17 @@
     <%= f.label :station_id %>
     <%= f.select :station_id, Station.all.collect { |p| [ p.name, p.id ] }, include_blank: true %>
   </div>
+
+  <div class="field">
+    <%= f.label :head_is_working %>?
+    <%= f.check_box :head_is_working%>
+  </div>
+
+  <div class="field">
+    <%= f.label :listen_is_working %>?
+    <%= f.check_box :listen_is_working%>
+  </div>
+
 
   <div class="actions">
     <%= f.submit %>
