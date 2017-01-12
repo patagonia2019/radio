@@ -23,6 +23,7 @@ class AssetListTableViewController: UITableViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: StreamListManager.didLoadNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: StationListManager.didLoadNotification, object: nil)
     }
     
     // MARK: UIViewController
@@ -38,7 +39,9 @@ class AssetListTableViewController: UITableViewController {
         StreamPlaybackManager.sharedManager.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleStreamListManagerDidLoadNotification(_:)), name: StreamListManager.didLoadNotification, object: nil)
-    }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleStreamListManagerDidLoadNotification(_:)), name: StationListManager.didLoadNotification, object: nil)
+}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -59,16 +62,16 @@ class AssetListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return StreamListManager.sharedManager.numberOfAssets()
+        return StreamListManager.sharedManager.numberOfStreams()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AssetListTableViewCell.reuseIdentifier, for: indexPath)
         
-        let asset = StreamListManager.sharedManager.asset(at: indexPath.row)
+        let stream = StreamListManager.sharedManager.stream(at: indexPath.row)
         
         if let cell = cell as? AssetListTableViewCell {
-            cell.asset = asset
+            cell.stream = stream
             cell.delegate = self
         }
         
@@ -76,7 +79,7 @@ class AssetListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? AssetListTableViewCell, let asset = cell.asset else { return }
+        guard let cell = tableView.cellForRow(at: indexPath) as? AssetListTableViewCell, let asset = cell.stream else { return }
         
         let downloadState = StreamPersistenceManager.sharedManager.downloadState(for: asset)
         let alertAction: UIAlertAction
@@ -122,18 +125,18 @@ class AssetListTableViewController: UITableViewController {
             
             // Grab a reference for the destinationViewController to use in later delegate callbacks from StreamPlaybackManager.
             playerViewController = playerViewControler
-            playerViewControler.title = cell.asset?.name
+            playerViewControler.title = cell.stream?.name
             
             let artwork = MPMediaItemArtwork.init(image: UIImage.init(named: "Locos_de_la_azotea")!)
             MPNowPlayingInfoCenter.default().nowPlayingInfo =
-                [MPMediaItemPropertyTitle: cell.asset?.name ?? "Radio",
+                [MPMediaItemPropertyTitle: cell.stream?.name ?? "Radio",
                  MPMediaItemPropertyArtist: "JF",
                  MPMediaItemPropertyAlbumTitle: "Bariloche",
                  MPMediaItemPropertyArtwork: artwork,
                  MPNowPlayingInfoPropertyPlaybackRate: 1]
 
-            // Load the new Asset to playback into StreamPlaybackManager.
-            StreamPlaybackManager.sharedManager.setAssetForPlayback(cell.asset)
+            // Load the new Stream to playback into StreamPlaybackManager.
+            StreamPlaybackManager.sharedManager.setAssetForPlayback(cell.stream)
         }
     }
     
@@ -151,7 +154,7 @@ class AssetListTableViewController: UITableViewController {
  */
 extension AssetListTableViewController: AssetListTableViewCellDelegate {
     
-    func assetListTableViewCell(_ cell: AssetListTableViewCell, downloadStateDidChange newState: Asset.DownloadState) {
+    func assetListTableViewCell(_ cell: AssetListTableViewCell, downloadStateDidChange newState: Stream.DownloadState) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         
         tableView.reloadRows(at: [indexPath], with: .automatic)

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class AssetListTableViewCell: UITableViewCell {
     // MARK: Properties
@@ -15,16 +16,29 @@ class AssetListTableViewCell: UITableViewCell {
     
     @IBOutlet weak var assetNameLabel: UILabel!
     
+    @IBOutlet weak var assetImageView: UIImageView!
+    
     @IBOutlet weak var downloadStateLabel: UILabel!
     
     @IBOutlet weak var downloadProgressView: UIProgressView!
     
     weak var delegate: AssetListTableViewCellDelegate?
     
-    var asset: Asset? {
+    var station: Station? {
         didSet {
-            if let asset = asset {
-                let downloadState = StreamPersistenceManager.sharedManager.downloadState(for: asset)
+            if let station = station {
+                guard let urlString = station.url,
+                    let url = URL(string: urlString) else { return }
+                
+                assetImageView.af_setImage(withURL: url)
+            }
+        }
+    }
+    
+    var stream: Stream? {
+        didSet {
+            if let stream = stream {
+                let downloadState = StreamPersistenceManager.sharedManager.downloadState(for: stream)
                 
                 switch downloadState {
                 case .downloaded:
@@ -38,12 +52,12 @@ class AssetListTableViewCell: UITableViewCell {
                     break
                 }
                 
-                assetNameLabel.text = asset.name
+                assetNameLabel.text = stream.name
                 downloadStateLabel.text = downloadState.rawValue
                 
                 let notificationCenter = NotificationCenter.default
-                notificationCenter.addObserver(self, selector: #selector(handleAssetDownloadStateChangedNotification(_:)), name: AssetDownloadStateChangedNotification, object: nil)
-                notificationCenter.addObserver(self, selector: #selector(handleAssetDownloadProgressNotification(_:)), name: AssetDownloadProgressNotification, object: nil)
+                notificationCenter.addObserver(self, selector: #selector(handleStreamDownloadStateChangedNotification(_:)), name: StreamDownloadStateChangedNotification, object: nil)
+                notificationCenter.addObserver(self, selector: #selector(handleAssetDownloadProgressNotification(_:)), name: StreamDownloadProgressNotification, object: nil)
             }
             else {
                 downloadProgressView.isHidden = false
@@ -55,19 +69,18 @@ class AssetListTableViewCell: UITableViewCell {
     
     // MARK: Notification handling
     
-    func handleAssetDownloadStateChangedNotification(_ notification: Notification) {
-        guard let assetStreamName = notification.userInfo![Asset.Keys.name] as? String,
-            let downloadStateRawValue = notification.userInfo![Asset.Keys.downloadState] as? String,
-            let downloadState = Asset.DownloadState(rawValue: downloadStateRawValue),
-            let asset = asset
-            , asset.name == assetStreamName else { return }
+    func handleStreamDownloadStateChangedNotification(_ notification: Notification) {
+        guard let assetStreamName = notification.userInfo![Stream.Keys.name] as? String,
+            let downloadStateRawValue = notification.userInfo![Stream.Keys.downloadState] as? String,
+            let downloadState = Stream.DownloadState(rawValue: downloadStateRawValue),
+            let asset = stream, asset.name == assetStreamName else { return }
         
         DispatchQueue.main.async {
             switch downloadState {
             case .downloading:
                 self.downloadProgressView.isHidden = false
                 
-                if let downloadSelection = notification.userInfo?[Asset.Keys.downloadSelectionDisplayName] as? String {
+                if let downloadSelection = notification.userInfo?[Stream.Keys.downloadSelectionDisplayName] as? String {
                     self.downloadStateLabel.text = "\(downloadState): \(downloadSelection)"
                     return
                 }
@@ -81,8 +94,8 @@ class AssetListTableViewCell: UITableViewCell {
     }
     
     func handleAssetDownloadProgressNotification(_ notification: NSNotification) {
-        guard let assetStreamName = notification.userInfo![Asset.Keys.name] as? String, let asset = asset , asset.name == assetStreamName else { return }
-        guard let progress = notification.userInfo![Asset.Keys.percentDownloaded] as? Double else { return }
+        guard let assetStreamName = notification.userInfo![Stream.Keys.name] as? String, let asset = stream , asset.name == assetStreamName else { return }
+        guard let progress = notification.userInfo![Stream.Keys.percentDownloaded] as? Double else { return }
         
         self.downloadProgressView.setProgress(Float(progress), animated: true)
     }
@@ -90,5 +103,5 @@ class AssetListTableViewCell: UITableViewCell {
 
 protocol AssetListTableViewCellDelegate: class {
     
-    func assetListTableViewCell(_ cell: AssetListTableViewCell, downloadStateDidChange newState: Asset.DownloadState)
+    func assetListTableViewCell(_ cell: AssetListTableViewCell, downloadStateDidChange newState: Stream.DownloadState)
 }

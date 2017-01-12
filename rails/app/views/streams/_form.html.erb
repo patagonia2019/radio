@@ -18,7 +18,16 @@
 
   <div class="field">
         <% if streamUrlIsAudio?(stream.url_type) %> 
-        <%= audio_tag(stream.name, controls: true)  %> 
+        <%= audio_tag(stream.name, 
+                        controls: true, 
+'Accept-Language': 'en-us',
+'X-Playback-Session-Id': '220AC7B2-AED2-4C38-A2F5-1473609B62D5',
+'icy-metadata': '1',
+'Accept': '*/*',
+'User-Agent': 'AppleCoreMedia/1.0.0.15G31 (Macintosh; U; Intel Mac OS X 10_11_6; en_us)',
+'Referer': 'http://ar.cienradios.com/player/del_lago/',
+'Accept-Encoding': 'identity',
+'Connection': 'keep')  %> 
         <% end %> 
   </div>
 

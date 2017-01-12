@@ -10,13 +10,16 @@ import Foundation
 import AVFoundation
 
 /// Notification for when download progress has changed.
-let AssetDownloadProgressNotification: NSNotification.Name = NSNotification.Name(rawValue: "AssetDownloadProgressNotification")
+let StreamDownloadProgressNotification: NSNotification.Name = NSNotification.Name(rawValue: "StreamDownloadProgressNotification")
 
-/// Notification for when the download state of an Asset has changed.
-let AssetDownloadStateChangedNotification: NSNotification.Name = NSNotification.Name(rawValue: "AssetDownloadStateChangedNotification")
+/// Notification for when the download state of an Stream has changed.
+let StreamDownloadStateChangedNotification: NSNotification.Name = NSNotification.Name(rawValue: "StreamDownloadStateChangedNotification")
 
 /// Notification for when StreamPersistenceManager has completely restored its state.
 let StreamPersistenceManagerDidRestoreStateNotification: NSNotification.Name = NSNotification.Name(rawValue: "StreamPersistenceManagerDidRestoreStateNotification")
+
+/// Notification for when StationPersistenceManager has completely restored its state.
+let StationPersistenceManagerDidRestoreStateNotification: NSNotification.Name = NSNotification.Name(rawValue: "StationPersistenceManagerDidRestoreStateNotification")
 
 class StreamPersistenceManager: NSObject {
     // MARK: Properties
@@ -30,8 +33,8 @@ class StreamPersistenceManager: NSObject {
     /// The AVAssetDownloadURLSession to use for managing AVAssetDownloadTasks.
     fileprivate var assetDownloadURLSession: AVAssetDownloadURLSession!
     
-    /// Internal map of AVAssetDownloadTask to its corresponding Asset.
-    fileprivate var activeDownloadsMap = [AnyHashable : Asset]()
+    /// Internal map of AVAssetDownloadTask to its corresponding Stream.
+    fileprivate var activeDownloadsMap = [AnyHashable : Stream]()
     
     /// Internal map of AVAssetDownloadTask to its resoled AVMediaSelection
     fileprivate var mediaSelectionMap = [AnyHashable : AVMediaSelection]()
@@ -61,20 +64,22 @@ class StreamPersistenceManager: NSObject {
         }
     }
     
-    /// Restores the Application state by getting all the AVAssetDownloadTasks and restoring their Asset structs.
+    /// Restores the Application state by getting all the AVAssetDownloadTasks and restoring their Stream structs.
     func restorePersistenceManager() {
         guard !didRestorePersistenceManager else { return }
         
         didRestorePersistenceManager = true
         
+        NotificationCenter.default.post(name: StationPersistenceManagerDidRestoreStateNotification, object: nil)
+
         // Grab all the tasks associated with the assetDownloadURLSession
         if #available(iOS 10.0, *) {
             assetDownloadURLSession.getAllTasks { tasksArray in
-                // For each task, restore the state in the app by recreating Asset structs and reusing existing AVURLAsset objects.
+                // For each task, restore the state in the app by recreating Stream structs and reusing existing AVURLAsset objects.
                 for task in tasksArray {
                     guard let assetDownloadTask = task as? AVAssetDownloadTask, let assetName = task.taskDescription else { break }
                     
-                    let asset = Asset(name: assetName, urlAsset: assetDownloadTask.urlAsset)
+                    let asset = Stream(name: assetName, urlAsset: assetDownloadTask.urlAsset)
                     self.activeDownloadsMap[assetDownloadTask] = asset
                 }
                 
@@ -86,8 +91,8 @@ class StreamPersistenceManager: NSObject {
         }
     }
     
-    /// Triggers the initial AVAssetDownloadTask for a given Asset.
-    func downloadStream(for asset: Asset) {
+    /// Triggers the initial AVAssetDownloadTask for a given Stream.
+    func downloadStream(for asset: Stream) {
         /*
          For the initial download, we ask the URLSession for an AVAssetDownloadTask
          with a minimum bitrate corresponding with one of the lower bitrate variants
@@ -96,14 +101,18 @@ class StreamPersistenceManager: NSObject {
         let assetDownloadTask: AVAssetDownloadTask?
         
         if #available(iOS 10.0, *) {
-            assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: asset.urlAsset, assetTitle: asset.name, assetArtworkData: nil, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 265000])
+            guard let name = asset.name,
+                  let urlAsset = asset.urlAsset else { return }
+            assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: urlAsset, assetTitle: name, assetArtworkData: nil, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 265000])
         } else {
+            guard let name = asset.name,
+                let urlAsset = asset.urlAsset else { return }
             
-            guard let url = urlForStream(withName: asset.name) else {
+            guard let url = urlForStream(withName: name) else {
                 return
             }
             
-            assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: asset.urlAsset, destinationURL: url, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 265000])
+            assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: urlAsset, destinationURL: url, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 265000])
         }
         
         guard let task = assetDownloadTask else {
@@ -118,15 +127,15 @@ class StreamPersistenceManager: NSObject {
         task.resume()
         
         var userInfo = [String: Any]()
-        userInfo[Asset.Keys.name] = asset.name
-        userInfo[Asset.Keys.downloadState] = Asset.DownloadState.downloading.rawValue
+        userInfo[Stream.Keys.name] = asset.name
+        userInfo[Stream.Keys.downloadState] = Stream.DownloadState.downloading.rawValue
         
-        NotificationCenter.default.post(name: AssetDownloadStateChangedNotification, object: nil, userInfo:  userInfo)
+        NotificationCenter.default.post(name: StreamDownloadStateChangedNotification, object: nil, userInfo:  userInfo)
     }
     
-    /// Returns an Asset given a specific name if that Asset is asasociated with an active download.
-    func assetForStream(withName name: String) -> Asset? {
-        var asset: Asset?
+    /// Returns an Stream given a specific name if that Stream is asasociated with an active download.
+    func assetForStream(withName name: String) -> Stream? {
+        var asset: Stream?
         
         for (_, assetValue) in activeDownloadsMap {
             if name == assetValue.name {
@@ -148,23 +157,25 @@ class StreamPersistenceManager: NSObject {
         return url
     }
     
-    /// Returns an Asset pointing to a file on disk if it exists.
-    func localAssetForStream(withName name: String) -> Asset? {
-        var asset: Asset?
+    /// Returns an Stream pointing to a file on disk if it exists.
+    func localAssetForStream(withName name: String) -> Stream? {
+        var asset: Stream?
         guard let url = urlForStream(withName: name) else {
             return nil
         }
-        asset = Asset(name: name, urlAsset: AVURLAsset(url: url))
+        asset = Stream(name: name, urlAsset: AVURLAsset(url: url))
         
         return asset
     }
     
-    /// Returns the current download state for a given Asset.
-    func downloadState(for asset: Asset) -> Asset.DownloadState {
+    /// Returns the current download state for a given Stream.
+    func downloadState(for asset: Stream) -> Stream.DownloadState {
         let userDefaults = UserDefaults.standard
         
         // Check if there is a file URL stored for this asset.
-        if let localFileLocation = userDefaults.value(forKey: asset.name) as? String{
+        guard let name = asset.name else { return .notDownloaded}
+
+        if let localFileLocation = userDefaults.value(forKey: name) as? String{
             // Check if the file exists on disk
             let localFilePath = baseDownloadURL.appendingPathComponent(localFileLocation).path
             
@@ -187,30 +198,32 @@ class StreamPersistenceManager: NSObject {
         return .notDownloaded
     }
     
-    /// Deletes an Asset on disk if possible.
-    func deleteAsset(_ asset: Asset) {
+    /// Deletes an Stream on disk if possible.
+    func deleteAsset(_ asset: Stream) {
         let userDefaults = UserDefaults.standard
         
         do {
-            if let localFileLocation = userDefaults.value(forKey: asset.name) as? String {
+            guard let name = asset.name else { return }
+
+            if let localFileLocation = userDefaults.value(forKey: name) as? String {
                 let localFileLocation = baseDownloadURL.appendingPathComponent(localFileLocation)
                 try FileManager.default.removeItem(at: localFileLocation)
                 
-                userDefaults.removeObject(forKey: asset.name)
+                userDefaults.removeObject(forKey: name)
                 
                 var userInfo = [String: Any]()
-                userInfo[Asset.Keys.name] = asset.name
-                userInfo[Asset.Keys.downloadState] = Asset.DownloadState.notDownloaded.rawValue
+                userInfo[Stream.Keys.name] = asset.name
+                userInfo[Stream.Keys.downloadState] = Stream.DownloadState.notDownloaded.rawValue
                 
-                NotificationCenter.default.post(name: AssetDownloadStateChangedNotification, object: nil, userInfo:  userInfo)
+                NotificationCenter.default.post(name: StreamDownloadStateChangedNotification, object: nil, userInfo:  userInfo)
             }
         } catch {
             print("An error occured deleting the file: \(error)")
         }
     }
     
-    /// Cancels an AVAssetDownloadTask given an Asset.
-    func cancelDownload(for asset: Asset) {
+    /// Cancels an AVAssetDownloadTask given an Stream.
+    func cancelDownload(for asset: Stream) {
         var task: AVAssetDownloadTask?
         
         for (taskKey, assetVal) in activeDownloadsMap {
@@ -279,7 +292,7 @@ extension StreamPersistenceManager: AVAssetDownloadDelegate {
         
         // Prepare the basic userInfo dictionary that will be posted as part of our notification.
         var userInfo = [String: Any]()
-        userInfo[Asset.Keys.name] = asset.name
+        userInfo[Stream.Keys.name] = asset.name
         
         if let error = error as? NSError {
             switch (error.domain, error.code) {
@@ -288,18 +301,19 @@ extension StreamPersistenceManager: AVAssetDownloadDelegate {
                  This task was canceled, you should perform cleanup using the
                  URL saved from AVAssetDownloadDelegate.urlSession(_:assetDownloadTask:didFinishDownloadingTo:).
                  */
-                guard let localFileLocation = userDefaults.value(forKey: asset.name) as? String else { return }
+                guard   let name = asset.name,
+                        let localFileLocation = userDefaults.value(forKey: name) as? String else { return }
                 
                 do {
                     let fileURL = baseDownloadURL.appendingPathComponent(localFileLocation)
                     try FileManager.default.removeItem(at: fileURL)
                     
-                    userDefaults.removeObject(forKey: asset.name)
+                    userDefaults.removeObject(forKey: name)
                 } catch {
                     print("An error occured trying to delete the contents on disk for \(asset.name): \(error)")
                 }
                 
-                userInfo[Asset.Keys.downloadState] = Asset.DownloadState.notDownloaded.rawValue
+                userInfo[Stream.Keys.downloadState] = Stream.DownloadState.notDownloaded.rawValue
                 
             case (NSURLErrorDomain, NSURLErrorUnknown):
                 fatalError("Downloading HLS streams is not supported in the simulator.")
@@ -343,16 +357,18 @@ extension StreamPersistenceManager: AVAssetDownloadDelegate {
                 
                 let assetDownloadTask: AVAssetDownloadTask?
                 
+                guard let name = asset.name,
+                      let urlAsset = asset.urlAsset else { return }
                 if #available(iOS 10.0, *) {
-                    assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: task.urlAsset, assetTitle: asset.name, assetArtworkData: nil, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 2000000, AVAssetDownloadTaskMediaSelectionKey: mediaSelection])
+                    assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: task.urlAsset, assetTitle: name, assetArtworkData: nil, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 2000000, AVAssetDownloadTaskMediaSelectionKey: mediaSelection])
                     
                 } else {
                     
-                    guard let url = urlForStream(withName: asset.name) else {
+                    guard let url = urlForStream(withName: name) else {
                         return
                     }
                     
-                    assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: asset.urlAsset, destinationURL: url, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 2000000, AVAssetDownloadTaskMediaSelectionKey: mediaSelection])
+                    assetDownloadTask = assetDownloadURLSession.makeAssetDownloadTask(asset: urlAsset, destinationURL: url, options: [AVAssetDownloadTaskMinimumRequiredMediaBitrateKey: 2000000, AVAssetDownloadTaskMediaSelectionKey: mediaSelection])
                 }
                 
                 guard let task = assetDownloadTask else {
@@ -365,17 +381,17 @@ extension StreamPersistenceManager: AVAssetDownloadDelegate {
                 
                 task.resume()
                 
-                userInfo[Asset.Keys.downloadState] = Asset.DownloadState.downloading.rawValue
-                userInfo[Asset.Keys.downloadSelectionDisplayName] = mediaSelectionPair.mediaSelectionOption!.displayName
+                userInfo[Stream.Keys.downloadState] = Stream.DownloadState.downloading.rawValue
+                userInfo[Stream.Keys.downloadSelectionDisplayName] = mediaSelectionPair.mediaSelectionOption!.displayName
             }
             else {
                 // All additional media selections have been downloaded.
-                userInfo[Asset.Keys.downloadState] = Asset.DownloadState.downloaded.rawValue
+                userInfo[Stream.Keys.downloadState] = Stream.DownloadState.downloaded.rawValue
                 
             }
         }
         
-        NotificationCenter.default.post(name: AssetDownloadStateChangedNotification, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: StreamDownloadStateChangedNotification, object: nil, userInfo: userInfo)
     }
     
     func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didFinishDownloadingTo location: URL) {
@@ -387,8 +403,8 @@ extension StreamPersistenceManager: AVAssetDownloadDelegate {
          `URLSessionTaskDelegate.urlSession(_:task:didCompleteWithError:)`.
          */
         if let asset = activeDownloadsMap[assetDownloadTask] {
-            
-            userDefaults.set(location.relativePath, forKey: asset.name)
+            guard let name = asset.name else { return }
+            userDefaults.set(location.relativePath, forKey: name)
         }
     }
     
@@ -403,10 +419,10 @@ extension StreamPersistenceManager: AVAssetDownloadDelegate {
         }
         
         var userInfo = [String: Any]()
-        userInfo[Asset.Keys.name] = asset.name
-        userInfo[Asset.Keys.percentDownloaded] = percentComplete
+        userInfo[Stream.Keys.name] = asset.name
+        userInfo[Stream.Keys.percentDownloaded] = percentComplete
         
-        NotificationCenter.default.post(name: AssetDownloadProgressNotification, object: nil, userInfo:  userInfo)
+        NotificationCenter.default.post(name: StreamDownloadProgressNotification, object: nil, userInfo:  userInfo)
     }
     
     func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didResolve resolvedMediaSelection: AVMediaSelection) {

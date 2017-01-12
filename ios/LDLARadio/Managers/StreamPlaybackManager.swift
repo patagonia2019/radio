@@ -36,15 +36,17 @@ class StreamPlaybackManager: NSObject {
         }
     }
     
-    /// The Asset that is currently being loaded for playback.
-    private var asset: Asset? {
+    /// The Stream that is currently being loaded for playback.
+    private var asset: Stream? {
         willSet {
-            asset?.urlAsset.removeObserver(self, forKeyPath: #keyPath(AVURLAsset.isPlayable), context: &observerContext)
+            guard let urlAsset = asset?.urlAsset else { return }
+            urlAsset.removeObserver(self, forKeyPath: #keyPath(AVURLAsset.isPlayable), context: &observerContext)
         }
         
         didSet {
             if let asset = asset {
-                asset.urlAsset.addObserver(self, forKeyPath: #keyPath(AVURLAsset.isPlayable), options: [.initial, .new], context: &observerContext)
+                guard let urlAsset = asset.urlAsset else { return }
+                urlAsset.addObserver(self, forKeyPath: #keyPath(AVURLAsset.isPlayable), options: [.initial, .new], context: &observerContext)
             }
             else {
                 playerItem = nil
@@ -66,11 +68,11 @@ class StreamPlaybackManager: NSObject {
     }
     
     /**
-     Replaces the currently playing `Asset`, if any, with a new `Asset`. If nil
-     is passed, `StreamPlaybackManager` will handle unloading the existing `Asset`
+     Replaces the currently playing `Stream`, if any, with a new `Stream`. If nil
+     is passed, `StreamPlaybackManager` will handle unloading the existing `Stream`
      and handle KVO cleanup.
      */
-    func setAssetForPlayback(_ asset: Asset?) {
+    func setAssetForPlayback(_ asset: Stream?) {
         self.asset = asset
     }
     
@@ -87,9 +89,11 @@ class StreamPlaybackManager: NSObject {
         
         switch keyPath {
         case #keyPath(AVURLAsset.isPlayable):
-            guard let asset = asset/*, asset.urlAsset.isPlayable == true*/ else { return }
+            guard let asset = asset,
+                  let urlAsset = asset.urlAsset,
+                urlAsset.isPlayable == true else { return }
             
-            playerItem = AVPlayerItem(asset: asset.urlAsset)
+            playerItem = AVPlayerItem(asset: urlAsset)
             player.replaceCurrentItem(with: playerItem)
         case #keyPath(AVPlayerItem.status):
             guard let playerItem = playerItem else { return }

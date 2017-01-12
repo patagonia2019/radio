@@ -5,6 +5,7 @@ class StreamsController < ApplicationController
   # GET /streams.json
   def index
     @streams = Stream.all
+    #@streams = Stream.where(listen_is_working:true)
   end
 
   # GET /streams/1

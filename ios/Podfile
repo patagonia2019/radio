@@ -2,6 +2,7 @@ use_frameworks!
 
 def sharedPods
     pod 'AlamofireObjectMapper'
+    pod 'AlamofireImage'
     pod 'Localize-Swift', '~> 1.7'
     pod 'JFCore', :path => '/Users/javierfuchs/Job/southfox/jfcore'
 end
