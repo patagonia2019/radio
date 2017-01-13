@@ -12,8 +12,11 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    var userDefault: UserDefaults?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        
+        registerSettingsBundle()
         
         UIApplication.shared.beginReceivingRemoteControlEvents()
         
@@ -24,5 +27,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
+        
     }
+    
+    func registerSettingsBundle() {
+        var appDefaults = [String:AnyObject]()
+        appDefaults["server_url"] = "http://192.168.250.185:3000" as AnyObject?
+        UserDefaults.standard.register(defaults: appDefaults)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
+    }
+    
+    func defaultsChanged() {
+        userDefault = UserDefaults.standard
+    }
+    
 }

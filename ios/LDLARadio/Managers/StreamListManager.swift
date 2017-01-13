@@ -57,10 +57,24 @@ class StreamListManager: NSObject {
     func stream(at index: Int) -> Stream {
         return streams[index]
     }
-    
+
+    /// Returns an Station for a given station id.
+    func stream(byStation stationId: Int?) -> [Stream]? {
+        var array = [Stream]()
+        for stream in streams {
+            if stream.station_id == stationId {
+                array.append(stream)
+            }
+        }
+        return array
+    }
+ 
     func handleStreamPersistenceManagerDidRestoreStateNotification(_ notification: Notification) {
         DispatchQueue.main.async {
-            let streamsJsonUrl = "http://192.168.250.185:3000/streams.json"
+            guard let server = UserDefaults.standard.string(forKey: "server_url") else {
+                return
+            }
+            let streamsJsonUrl = server + "/streams.json"
 
             Alamofire.request(streamsJsonUrl, method:.get).validate().responseArray { (response: DataResponse<[Stream]>) in
                 if let result = response.result.value {

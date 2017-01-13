@@ -18,6 +18,7 @@ class Stream : Mappable {
      var updated_at: Date?
      var head_is_working: Bool?
      var listen_is_working: Bool?
+     var use_web: Bool?
      var url: String?
     
     /// The AVURLAsset corresponding to this Stream.
@@ -40,6 +41,7 @@ class Stream : Mappable {
         updated_at <- (map["updated_at"], DateTransform())
         head_is_working <- map["head_is_working"]
         listen_is_working <- map["listen_is_working"]
+        use_web <- map["use_web"]
         url <- map["url"]
     }
 }

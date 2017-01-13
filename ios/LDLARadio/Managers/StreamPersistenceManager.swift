@@ -21,6 +21,8 @@ let StreamPersistenceManagerDidRestoreStateNotification: NSNotification.Name = N
 /// Notification for when StationPersistenceManager has completely restored its state.
 let StationPersistenceManagerDidRestoreStateNotification: NSNotification.Name = NSNotification.Name(rawValue: "StationPersistenceManagerDidRestoreStateNotification")
 
+let CityPersistenceManagerDidRestoreStateNotification: NSNotification.Name = NSNotification.Name(rawValue: "CityPersistenceManagerDidRestoreStateNotification")
+
 class StreamPersistenceManager: NSObject {
     // MARK: Properties
     
@@ -69,6 +71,12 @@ class StreamPersistenceManager: NSObject {
         guard !didRestorePersistenceManager else { return }
         
         didRestorePersistenceManager = true
+        
+        _ = StreamListManager.sharedManager;
+        _ = CityListManager.sharedManager;
+        _ = StationListManager.sharedManager;
+        
+        NotificationCenter.default.post(name: CityPersistenceManagerDidRestoreStateNotification, object: nil)
         
         NotificationCenter.default.post(name: StationPersistenceManagerDidRestoreStateNotification, object: nil)
 

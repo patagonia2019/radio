@@ -5,6 +5,7 @@
     <td> <%= streamUrlExist(stream.name) if stream.listen_is_working? %> </td>
     <td> <%=stream.head_is_working%> </td>
     <td> <%=stream.listen_is_working%> </td>
+    <td> <%=stream.use_web%> </td>
     <td>
         <% if stream.listen_is_working and streamUrlIsAudio?(stream.url_type) %> 
         <%= audio_tag(stream.name, controls: true)  %> 

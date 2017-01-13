@@ -1,5 +1,5 @@
 //
-//  AssetListTableViewController.swift
+//  RadioListTableViewController.swift
 //  LDLARadio
 //
 //  Created by Javier Fuchs on 1/6/17.
@@ -12,10 +12,11 @@ import AVKit
 import MediaPlayer
 
 
-class AssetListTableViewController: UITableViewController {
+class RadioListTableViewController: UITableViewController {
     // MARK: Properties
     
-    static let presentPlayerViewControllerSegueIdentifier = "PresentPlayerViewControllerSegueIdentifier"
+    static let presentPlayerViewControllerSegueIdentifier = "presentPlayerViewControllerSegueIdentifier"
+    static let presentWebViewControllerSegueIdentifier = "presentWebViewControllerSegueIdentifier"
     
     fileprivate var playerViewController: AVPlayerViewController?
     
@@ -24,6 +25,7 @@ class AssetListTableViewController: UITableViewController {
     deinit {
         NotificationCenter.default.removeObserver(self, name: StreamListManager.didLoadNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: StationListManager.didLoadNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: CityListManager.didLoadNotification, object: nil)
     }
     
     // MARK: UIViewController
@@ -35,13 +37,15 @@ class AssetListTableViewController: UITableViewController {
         tableView.estimatedRowHeight = 75.0
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        // Set AssetListTableViewController as the delegate for StreamPlaybackManager to recieve playback information.
+        // Set RadioListTableViewController as the delegate for StreamPlaybackManager to recieve playback information.
         StreamPlaybackManager.sharedManager.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleStreamListManagerDidLoadNotification(_:)), name: StreamListManager.didLoadNotification, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleStreamListManagerDidLoadNotification(_:)), name: StationListManager.didLoadNotification, object: nil)
-}
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleStreamListManagerDidLoadNotification(_:)), name: CityListManager.didLoadNotification, object: nil)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -62,24 +66,46 @@ class AssetListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return StreamListManager.sharedManager.numberOfStreams()
+        return StationListManager.sharedManager.numberOfStations()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: AssetListTableViewCell.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: RadioListTableViewCell.reuseIdentifier, for: indexPath)
         
-        let stream = StreamListManager.sharedManager.stream(at: indexPath.row)
-        
-        if let cell = cell as? AssetListTableViewCell {
-            cell.stream = stream
+        if let cell = cell as? RadioListTableViewCell {
+            let station = StationListManager.sharedManager.station(at: indexPath.row)
+            let streams = StreamListManager.sharedManager.stream(byStation: station.id)
+            let city = CityListManager.sharedManager.city(by: station.city_id)
+            //            cell.stream = (streams?.count == 1) ? streams?.first : nil
+            cell.stream = streams?.first
+            cell.station = station
+            cell.city = city
             cell.delegate = self
         }
         
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? RadioListTableViewCell, let station = cell.station,
+            let streams = StreamListManager.sharedManager.stream(byStation: station.id),
+            let stream = streams.first else { return }
+        
+        guard let use_web = stream.use_web else {
+            performSegue(withIdentifier: RadioListTableViewController.presentPlayerViewControllerSegueIdentifier, sender: cell)
+            return
+        }
+        if use_web {
+            performSegue(withIdentifier: RadioListTableViewController.presentWebViewControllerSegueIdentifier, sender: cell)
+        }
+        else {
+            performSegue(withIdentifier: RadioListTableViewController.presentPlayerViewControllerSegueIdentifier, sender: cell)
+            
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? AssetListTableViewCell, let asset = cell.stream else { return }
+        guard let cell = tableView.cellForRow(at: indexPath) as? RadioListTableViewCell, let asset = cell.stream else { return }
         
         let downloadState = StreamPersistenceManager.sharedManager.downloadState(for: asset)
         let alertAction: UIAlertAction
@@ -120,20 +146,51 @@ class AssetListTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-        if segue.identifier == AssetListTableViewController.presentPlayerViewControllerSegueIdentifier {
-            guard let cell = sender as? AssetListTableViewCell, let playerViewControler = segue.destination as? AVPlayerViewController else { return }
+        if segue.identifier == RadioListTableViewController.presentWebViewControllerSegueIdentifier {
+            guard let cell = sender as? RadioListTableViewCell,
+                let webViewControler = segue.destination as? WebViewController,
+                let station = cell.station,
+                let stream = cell.stream,
+                let city = cell.city,
+                let streamLink = stream.name
+                else { return }
+            
+            webViewControler.urlLink = URL(string: streamLink)
+            
+        }
+        else if segue.identifier == RadioListTableViewController.presentPlayerViewControllerSegueIdentifier {
+            guard let cell = sender as? RadioListTableViewCell,
+                let playerViewControler = segue.destination as? AVPlayerViewController,
+                let station = cell.station,
+                let city = cell.city
+                else { return }
             
             // Grab a reference for the destinationViewController to use in later delegate callbacks from StreamPlaybackManager.
             playerViewController = playerViewControler
-            playerViewControler.title = cell.stream?.name
             
-            let artwork = MPMediaItemArtwork.init(image: UIImage.init(named: "Locos_de_la_azotea")!)
-            MPNowPlayingInfoCenter.default().nowPlayingInfo =
-                [MPMediaItemPropertyTitle: cell.stream?.name ?? "Radio",
-                 MPMediaItemPropertyArtist: "JF",
-                 MPMediaItemPropertyAlbumTitle: "Bariloche",
-                 MPMediaItemPropertyArtwork: artwork,
-                 MPNowPlayingInfoPropertyPlaybackRate: 1]
+            var nowPlayingInfo = [String : Any]()
+            if let stationName = station.name {
+                nowPlayingInfo[MPMediaItemPropertyTitle] = stationName
+                playerViewControler.title = stationName
+            }
+            if let tunning_dial = station.tunning_dial {
+                nowPlayingInfo[MPMediaItemPropertyArtist] = tunning_dial
+            }
+            if let cityName = city.name {
+                nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = cityName
+            }
+            if nowPlayingInfo[MPMediaItemPropertyTitle] == nil {
+                nowPlayingInfo[MPMediaItemPropertyTitle] = "Locos de la azotea"
+            }
+            nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1
+
+            if let image = cell.assetImageView?.image {
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork.init(image: image)
+            }
+            else if let image = UIImage.init(named: "Locos_de_la_azotea") {
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork.init(image: image)
+            }
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
 
             // Load the new Stream to playback into StreamPlaybackManager.
             StreamPlaybackManager.sharedManager.setAssetForPlayback(cell.stream)
@@ -150,11 +207,11 @@ class AssetListTableViewController: UITableViewController {
 }
 
 /**
- Extend `AssetListTableViewController` to conform to the `AssetListTableViewCellDelegate` protocol.
+ Extend `RadioListTableViewController` to conform to the `AssetListTableViewCellDelegate` protocol.
  */
-extension AssetListTableViewController: AssetListTableViewCellDelegate {
+extension RadioListTableViewController: AssetListTableViewCellDelegate {
     
-    func assetListTableViewCell(_ cell: AssetListTableViewCell, downloadStateDidChange newState: Stream.DownloadState) {
+    func assetListTableViewCell(_ cell: RadioListTableViewCell, downloadStateDidChange newState: Stream.DownloadState) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         
         tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -162,9 +219,9 @@ extension AssetListTableViewController: AssetListTableViewCellDelegate {
 }
 
 /**
- Extend `AssetListTableViewController` to conform to the `AssetPlaybackDelegate` protocol.
+ Extend `RadioListTableViewController` to conform to the `AssetPlaybackDelegate` protocol.
  */
-extension AssetListTableViewController: AssetPlaybackDelegate {
+extension RadioListTableViewController: AssetPlaybackDelegate {
     func streamPlaybackManager(_ streamPlaybackManager: StreamPlaybackManager, playerReadyToPlay player: AVPlayer) {
         player.play()
     }

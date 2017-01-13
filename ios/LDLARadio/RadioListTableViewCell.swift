@@ -1,5 +1,5 @@
 //
-//  AssetListTableViewCell.swift
+//  RadioListTableViewCell.swift
 //  LDLARadio
 //
 //  Created by Javier Fuchs on 1/6/17.
@@ -9,12 +9,14 @@
 import UIKit
 import AlamofireImage
 
-class AssetListTableViewCell: UITableViewCell {
+class RadioListTableViewCell: UITableViewCell {
     // MARK: Properties
     
-    static let reuseIdentifier = "AssetListTableViewCellIdentifier"
+    static let reuseIdentifier = "RadioListTableViewCellIdentifier"
     
     @IBOutlet weak var assetNameLabel: UILabel!
+    
+    @IBOutlet weak var cityLabel: UILabel!
     
     @IBOutlet weak var assetImageView: UIImageView!
     
@@ -27,10 +29,19 @@ class AssetListTableViewCell: UITableViewCell {
     var station: Station? {
         didSet {
             if let station = station {
-                guard let urlString = station.url,
-                    let url = URL(string: urlString) else { return }
+                guard let imageUrl = station.imageUrl,
+                    let url = URL(string: imageUrl) else { return }
                 
                 assetImageView.af_setImage(withURL: url)
+                assetNameLabel.text = station.name
+            }
+        }
+    }
+    
+    var city: City? {
+        didSet {
+            if let city = city {
+                cityLabel.text = city.name
             }
         }
     }
@@ -45,14 +56,12 @@ class AssetListTableViewCell: UITableViewCell {
                     downloadProgressView.isHidden = true
                     
                 case .downloading:
-                    
                     downloadProgressView.isHidden = false
                     
                 case .notDownloaded:
                     break
                 }
                 
-                assetNameLabel.text = stream.name
                 downloadStateLabel.text = downloadState.rawValue
                 
                 let notificationCenter = NotificationCenter.default
@@ -103,5 +112,5 @@ class AssetListTableViewCell: UITableViewCell {
 
 protocol AssetListTableViewCellDelegate: class {
     
-    func assetListTableViewCell(_ cell: AssetListTableViewCell, downloadStateDidChange newState: Stream.DownloadState)
+    func assetListTableViewCell(_ cell: RadioListTableViewCell, downloadStateDidChange newState: Stream.DownloadState)
 }

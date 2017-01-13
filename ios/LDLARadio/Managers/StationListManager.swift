@@ -53,14 +53,27 @@ class StationListManager: NSObject {
         return stations.count
     }
     
-    /// Returns an Station for a given IndexPath.
+    /// Returns an Stream for a given IndexPath.
     func station(at index: Int) -> Station {
         return stations[index]
+    }
+
+    /// Returns an Station for a given station id.
+    func station(by id: Int?) -> Station? {
+        for station in stations {
+            if station.id == id {
+                return station
+            }
+        }
+        return nil
     }
     
     func handleStationPersistenceManagerDidRestoreStateNotification(_ notification: Notification) {
         DispatchQueue.main.async {
-            let stationsJsonUrl = "http://192.168.250.185:3000/stations.json"
+            guard let server = UserDefaults.standard.string(forKey: "server_url") else {
+                return
+            }
+            let stationsJsonUrl = server + "/stations.json"
 
             Alamofire.request(stationsJsonUrl, method:.get).validate().responseArray { (response: DataResponse<[Station]>) in
                 if let result = response.result.value {

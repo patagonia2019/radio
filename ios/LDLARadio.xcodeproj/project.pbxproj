@@ -7,17 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		421AAB661CE4FCCB007444CA /* AssetListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421AAB651CE4FCCB007444CA /* AssetListTableViewController.swift */; };
+		421AAB661CE4FCCB007444CA /* RadioListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421AAB651CE4FCCB007444CA /* RadioListTableViewController.swift */; };
 		424BF6CD1CEFB5ED0098BB15 /* StreamPlaybackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424BF6CC1CEFB5ED0098BB15 /* StreamPlaybackManager.swift */; };
 		425DD0A51D0D146900F96325 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425DD0A41D0D146900F96325 /* Stream.swift */; };
-		426CB1A01D054A3F0044B8A7 /* AssetListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CB19F1D054A3F0044B8A7 /* AssetListTableViewCell.swift */; };
+		426CB1A01D054A3F0044B8A7 /* RadioListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CB19F1D054A3F0044B8A7 /* RadioListTableViewCell.swift */; };
 		428139F21CE44B7300972264 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428139F11CE44B7300972264 /* AppDelegate.swift */; };
 		428139F71CE44B7300972264 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 428139F51CE44B7300972264 /* Main.storyboard */; };
 		428139F91CE44B7300972264 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 428139F81CE44B7300972264 /* Assets.xcassets */; };
 		428139FC1CE44B7300972264 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 428139FA1CE44B7300972264 /* LaunchScreen.storyboard */; };
 		42813A061CE44F9700972264 /* StreamPersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42813A051CE44F9700972264 /* StreamPersistenceManager.swift */; };
 		42AA6D151D04CE63002A8B3F /* StreamListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA6D141D04CE63002A8B3F /* StreamListManager.swift */; };
-		42AFF1461CE52D3E006B1BB3 /* Streams.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42AFF1451CE52D3E006B1BB3 /* Streams.plist */; };
+		703373A41E28343600E6D458 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 703373A31E28343600E6D458 /* Settings.bundle */; };
+		703373A61E284B6400E6D458 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703373A51E284B6400E6D458 /* City.swift */; };
+		703373A81E284C1800E6D458 /* CityListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703373A71E284C1800E6D458 /* CityListManager.swift */; };
+		703373AA1E291DF600E6D458 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703373A91E291DF600E6D458 /* WebViewController.swift */; };
 		7073F3B71E155C05004DBB59 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7073F3B61E155C05004DBB59 /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		708AAD9E1E27B407004D88C3 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708AAD9D1E27B407004D88C3 /* Station.swift */; };
 		708AADA01E27B586004D88C3 /* StationListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708AAD9F1E27B586004D88C3 /* StationListManager.swift */; };
@@ -25,11 +28,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		421AAB651CE4FCCB007444CA /* AssetListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AssetListTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		421AAB651CE4FCCB007444CA /* RadioListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RadioListTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		424BF6CC1CEFB5ED0098BB15 /* StreamPlaybackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StreamPlaybackManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42554D4B1D09EEDC0040BD4F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		425DD0A41D0D146900F96325 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
-		426CB19F1D054A3F0044B8A7 /* AssetListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AssetListTableViewCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		426CB19F1D054A3F0044B8A7 /* RadioListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RadioListTableViewCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		428139EE1CE44B7300972264 /* LDLARadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LDLARadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		428139F11CE44B7300972264 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		428139F61CE44B7300972264 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -38,8 +41,11 @@
 		428139FD1CE44B7300972264 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42813A051CE44F9700972264 /* StreamPersistenceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StreamPersistenceManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42AA6D141D04CE63002A8B3F /* StreamListManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = StreamListManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		42AFF1451CE52D3E006B1BB3 /* Streams.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Streams.plist; sourceTree = "<group>"; };
 		47F749A1AD4E4959FB881877 /* Pods-LDLARadio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LDLARadio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LDLARadio/Pods-LDLARadio.debug.xcconfig"; sourceTree = "<group>"; };
+		703373A31E28343600E6D458 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		703373A51E284B6400E6D458 /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		703373A71E284C1800E6D458 /* CityListManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CityListManager.swift; sourceTree = "<group>"; };
+		703373A91E291DF600E6D458 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		7073F3B61E155C05004DBB59 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		708AAD9D1E27B407004D88C3 /* Station.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		708AAD9F1E27B586004D88C3 /* StationListManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationListManager.swift; sourceTree = "<group>"; };
@@ -65,6 +71,7 @@
 			children = (
 				425DD0A41D0D146900F96325 /* Stream.swift */,
 				708AAD9D1E27B407004D88C3 /* Station.swift */,
+				703373A51E284B6400E6D458 /* City.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -94,13 +101,14 @@
 				4285E1701CF5623E0080B60C /* Managers */,
 				425DD0A11D0CF18200F96325 /* Model */,
 				428139F11CE44B7300972264 /* AppDelegate.swift */,
-				421AAB651CE4FCCB007444CA /* AssetListTableViewController.swift */,
-				426CB19F1D054A3F0044B8A7 /* AssetListTableViewCell.swift */,
-				42AFF1451CE52D3E006B1BB3 /* Streams.plist */,
+				421AAB651CE4FCCB007444CA /* RadioListTableViewController.swift */,
+				703373A91E291DF600E6D458 /* WebViewController.swift */,
+				426CB19F1D054A3F0044B8A7 /* RadioListTableViewCell.swift */,
 				428139F81CE44B7300972264 /* Assets.xcassets */,
 				428139F51CE44B7300972264 /* Main.storyboard */,
 				428139FA1CE44B7300972264 /* LaunchScreen.storyboard */,
 				428139FD1CE44B7300972264 /* Info.plist */,
+				703373A31E28343600E6D458 /* Settings.bundle */,
 			);
 			path = LDLARadio;
 			sourceTree = "<group>";
@@ -112,6 +120,7 @@
 				424BF6CC1CEFB5ED0098BB15 /* StreamPlaybackManager.swift */,
 				42AA6D141D04CE63002A8B3F /* StreamListManager.swift */,
 				708AAD9F1E27B586004D88C3 /* StationListManager.swift */,
+				703373A71E284C1800E6D458 /* CityListManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -206,8 +215,8 @@
 			files = (
 				428139FC1CE44B7300972264 /* LaunchScreen.storyboard in Resources */,
 				428139F91CE44B7300972264 /* Assets.xcassets in Resources */,
+				703373A41E28343600E6D458 /* Settings.bundle in Resources */,
 				428139F71CE44B7300972264 /* Main.storyboard in Resources */,
-				42AFF1461CE52D3E006B1BB3 /* Streams.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,15 +275,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				703373A81E284C1800E6D458 /* CityListManager.swift in Sources */,
 				424BF6CD1CEFB5ED0098BB15 /* StreamPlaybackManager.swift in Sources */,
 				425DD0A51D0D146900F96325 /* Stream.swift in Sources */,
 				708AADA01E27B586004D88C3 /* StationListManager.swift in Sources */,
 				708AAD9E1E27B407004D88C3 /* Station.swift in Sources */,
 				42813A061CE44F9700972264 /* StreamPersistenceManager.swift in Sources */,
-				421AAB661CE4FCCB007444CA /* AssetListTableViewController.swift in Sources */,
+				421AAB661CE4FCCB007444CA /* RadioListTableViewController.swift in Sources */,
+				703373AA1E291DF600E6D458 /* WebViewController.swift in Sources */,
+				703373A61E284B6400E6D458 /* City.swift in Sources */,
 				42AA6D151D04CE63002A8B3F /* StreamListManager.swift in Sources */,
 				428139F21CE44B7300972264 /* AppDelegate.swift in Sources */,
-				426CB1A01D054A3F0044B8A7 /* AssetListTableViewCell.swift in Sources */,
+				426CB1A01D054A3F0044B8A7 /* RadioListTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
