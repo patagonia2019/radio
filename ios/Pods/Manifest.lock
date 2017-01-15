@@ -1,0 +1,44 @@
+PODS:
+  - Alamofire (4.2.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
+  - AlamofireObjectMapper (4.0.1):
+    - Alamofire (~> 4.1)
+    - ObjectMapper (~> 2.0)
+  - DGElasticPullToRefresh (1.1)
+  - JFCore (0.1.0)
+  - Localize-Swift (1.7.1)
+  - NVActivityIndicatorView (3.1)
+  - ObjectMapper (2.2.2)
+  - SCLAlertView (0.7.0)
+  - SwiftIconFont (2.6.0)
+
+DEPENDENCIES:
+  - AlamofireImage
+  - AlamofireObjectMapper
+  - DGElasticPullToRefresh (~> 1.1)
+  - JFCore (from `/Users/javierfuchs/Job/southfox/jfcore`)
+  - Localize-Swift (~> 1.7)
+  - NVActivityIndicatorView (~> 3.1)
+  - SCLAlertView (~> 0.7)
+  - SwiftIconFont (~> 2.6)
+
+EXTERNAL SOURCES:
+  JFCore:
+    :path: /Users/javierfuchs/Job/southfox/jfcore
+
+SPEC CHECKSUMS:
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
+  AlamofireObjectMapper: 842d2eed43a4d0593ff0110d54ac86a170c4519c
+  DGElasticPullToRefresh: 28f11a6026302a90f8ffebbc6e24748e584dddd3
+  JFCore: 96ef54708b54bd62c074f72d6175278e37c9aee8
+  Localize-Swift: 6cabc1087c0e910e77bfa87c2ed3f65c80c0b2df
+  NVActivityIndicatorView: 9f47e8a4affb860ef729aeec99b1550219e6c233
+  ObjectMapper: 9e385c2295bcc4e16eabbcfc85db801442bba545
+  SCLAlertView: 8a14ffc40590c619e183eed2298b854385f30be1
+  SwiftIconFont: bbe1f32e1e16bac87dad8566afc80132cb8d072c
+
+PODFILE CHECKSUM: 1e376a4d858412b372ba3d2c956efad3301cae6f
+
+COCOAPODS: 1.1.1

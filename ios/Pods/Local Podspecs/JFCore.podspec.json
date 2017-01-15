@@ -1,0 +1,28 @@
+{
+  "name": "JFCore",
+  "version": "0.1.0",
+  "summary": "A short description of JFCore.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/southfox",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Javier Fuchs": "javier.fuchs@gmail.com"
+  },
+  "source": {
+    "git": "https://github/southfox/jfcore.git",
+    "branch": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0",
+    "watchos": "2.2"
+  },
+  "ios": {
+    "source_files": "JFCore/Classes/**/*"
+  },
+  "watchos": {
+    "source_files": "JFCore/Classes/all/**/*"
+  }
+}
