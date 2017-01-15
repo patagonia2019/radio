@@ -14,8 +14,6 @@ import JFCore
 
 class WebViewController: BaseViewController, UIWebViewDelegate {
     
-//    @IBOutlet weak var web: UIWebView!
-//    var web: UIWebView!
     var fileName : String?
     var tokens : [String : String]?
     var urlLink : URL?

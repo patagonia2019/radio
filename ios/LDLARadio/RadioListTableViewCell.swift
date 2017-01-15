@@ -54,15 +54,16 @@ class RadioListTableViewCell: UITableViewCell {
                 switch downloadState {
                 case .downloaded:
                     downloadProgressView.isHidden = true
-                    
+                    downloadStateLabel.text = downloadState.rawValue
+                    break
                 case .downloading:
                     downloadProgressView.isHidden = false
-                    
+                    downloadStateLabel.text = downloadState.rawValue
+                    break
                 case .notDownloaded:
                     break
                 }
                 
-                downloadStateLabel.text = downloadState.rawValue
                 
                 let notificationCenter = NotificationCenter.default
                 notificationCenter.addObserver(self, selector: #selector(handleStreamDownloadStateChangedNotification(_:)), name: StreamDownloadStateChangedNotification, object: nil)
